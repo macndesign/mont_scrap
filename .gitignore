@@ -2,3 +2,5 @@
 node_modules/
 media/
 staticfiles/
+.idea/
+env/
