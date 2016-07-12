@@ -1,6 +1,9 @@
 *.sqlite3
+*.rdb
 node_modules/
 media/
 staticfiles/
 .idea/
 env/
+.DS_Store
+__pycache__/

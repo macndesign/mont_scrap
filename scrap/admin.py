@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.template.defaultfilters import truncatewords
 from .models import Auction, Lot, Images
 
 
@@ -15,6 +16,7 @@ class LotInline(admin.TabularInline):
 class AuctionAdmin(admin.ModelAdmin):
     model = Auction
     list_filter = ('kind', 'date')
+    list_display = ('description', 'kind', 'date')
     inlines = [
         LotInline,
     ]
@@ -32,10 +34,22 @@ class ImagesInline(admin.TabularInline):
 
 class LotAdmin(admin.ModelAdmin):
     model = Lot
-    list_filter = ('auction', 'insurance')
+    search_fields = ('name', 'description')
+    list_display = ('name_without_lot', 'truncate_description')
+    list_filter = ('auction', 'insurance', 'situation')
     inlines = [
         ImagesInline,
     ]
+
+    def truncate_description(self, obj):
+        return truncatewords(obj.description, 50)
+
+    truncate_description.short_description = 'description'
+
+    def name_without_lot(self, obj):
+        return obj.name.lower().replace('lote', '').strip()
+
+    name_without_lot.short_description = 'lot'
 
 
 class ImagesAdmin(admin.ModelAdmin):

@@ -10,7 +10,7 @@ class Auction(models.Model):
         unique_together = ("description", "date")
 
     def __str__(self):
-        return self.description
+        return '{} - {}'.format(self.description, self.date.strftime('%d/%m/%Y'))
 
 
 class Lot(models.Model):
@@ -32,4 +32,8 @@ class Images(models.Model):
     lot = models.ForeignKey('Lot', blank=True, null=True)
 
     def __str__(self):
-        return self.image.name
+        return '{} - {} - {}'.format(
+            self.image.name,
+            self.lot.description,
+            self.lot.auction.description
+        )
