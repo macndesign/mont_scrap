@@ -1,6 +1,19 @@
 from django.contrib import admin
 from django.template.defaultfilters import truncatewords
-from .models import Auction, Lot, Images
+from .models import Auction, Lot, Images, Company
+
+
+class AuctionInline(admin.TabularInline):
+    model = Auction
+    readonly_fields = ('description', 'kind', 'date')
+
+
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    inlines = [
+        AuctionInline,
+    ]
 
 
 class LotInline(admin.TabularInline):
@@ -13,6 +26,7 @@ class LotInline(admin.TabularInline):
     lot_detail.allow_tags = True
 
 
+@admin.register(Auction)
 class AuctionAdmin(admin.ModelAdmin):
     model = Auction
     list_filter = ('kind', 'date')
@@ -32,6 +46,7 @@ class ImagesInline(admin.TabularInline):
     admin_image.allow_tags = True
 
 
+@admin.register(Lot)
 class LotAdmin(admin.ModelAdmin):
     model = Lot
     search_fields = ('name', 'description')
@@ -52,6 +67,7 @@ class LotAdmin(admin.ModelAdmin):
     name_without_lot.short_description = 'lot'
 
 
+@admin.register(Images)
 class ImagesAdmin(admin.ModelAdmin):
     model = Images
     list_display = ('admin_image', 'image')
@@ -60,8 +76,3 @@ class ImagesAdmin(admin.ModelAdmin):
         return '<img src="%s"/>' % obj.image.url
 
     admin_image.allow_tags = True
-
-
-admin.site.register(Auction, AuctionAdmin)
-admin.site.register(Lot, LotAdmin)
-admin.site.register(Images, ImagesAdmin)

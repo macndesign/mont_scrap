@@ -18,6 +18,14 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
 
+from scrap.views import CompanyViewSet
+from rest_framework.routers import DefaultRouter
+
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+
+router.register(r'companies', CompanyViewSet, base_name='company')
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^comment/', include('comment.urls', namespace='comment')),

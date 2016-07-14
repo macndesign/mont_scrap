@@ -1,13 +1,26 @@
 from django.db import models
 
 
+class Company(models.Model):
+    name = models.CharField(max_length=75)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ('name',)
+
+    def __str__(self):
+        return self.name
+
+
 class Auction(models.Model):
     description = models.CharField(max_length=120)
     kind = models.CharField(max_length=75, blank=True)
     date = models.DateTimeField()
+    company = models.ForeignKey('Company')
 
     class Meta:
         unique_together = ("description", "date")
+        ordering = ('-date', 'description')
 
     def __str__(self):
         return '{} - {}'.format(self.description, self.date.strftime('%d/%m/%Y'))
@@ -22,6 +35,9 @@ class Lot(models.Model):
     situation = models.CharField(max_length=120)
     insurance = models.BooleanField(default=False)
     auction = models.ForeignKey('Auction', blank=True, null=True)
+
+    class Meta:
+        ordering = ('name', 'description')
 
     def __str__(self):
         return self.description

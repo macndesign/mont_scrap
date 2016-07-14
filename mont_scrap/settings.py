@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'core',
     'scrap',
     'comment',
+    'filters',
+    'rest_framework',
     'channels',
 ]
 
