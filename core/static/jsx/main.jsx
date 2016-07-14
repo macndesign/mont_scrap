@@ -4,7 +4,7 @@ import CommentBox from './components/CommentBox.jsx';
 
 export function bootstrap(props) {
   ReactDOM.render(
-    <CommentBox comments={props.comments} url={props.url} pollInterval={props.pollInterval} />,
+    <CommentBox comments={props.comments} url={props.url} />,
     document.getElementById('content')
   );
 }

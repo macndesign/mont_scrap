@@ -60,59 +60,85 @@ module.exports =
 	var CommentForm = __webpack_require__(38);
 
 	module.exports = React.createClass({
-	  displayName: 'exports',
+	    displayName: 'exports',
 
-	  getInitialState: function getInitialState() {
-	    return { comments: this.props.comments };
-	  },
-	  handleCommentSubmit: function handleCommentSubmit(comment) {
-	    var comments = this.state.comments;
-	    comments.push(comment);
-	    this.setState({ comments: comments }, function () {
-	      this.postComment(comment);
-	    });
-	  },
-	  postComment: function postComment(comment) {
-	    $.ajax({
-	      url: this.props.url,
-	      type: 'POST',
-	      dataType: 'json',
-	      data: comment,
-	      success: function (comments) {
-	        this.setState({ comments: comments });
-	      }.bind(this),
-	      error: function (xhr, status, err) {
-	        console.error(this.props.url, status, err.toString());
-	      }.bind(this)
-	    });
-	  },
-	  getComments: function getComments() {
-	    $.ajax({
-	      url: this.props.url,
-	      dataType: 'json',
-	      success: function (comments) {
-	        this.setState({ comments: comments });
-	      }.bind(this),
-	      error: function (xhr, status, err) {
-	        console.error(this.props.url, status, err.toString());
-	      }.bind(this),
-	      complete: this.pollForNewComments
-	    });
-	  },
-	  pollForNewComments: function pollForNewComments() {
-	    setTimeout(this.getComments, this.props.pollInterval);
-	  },
-	  componentDidMount: function componentDidMount() {
-	    this.pollForNewComments();
-	  },
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      React.createElement(CommentList, { comments: this.state.comments }),
-	      React.createElement(CommentForm, { url: this.props.url, onCommentSubmit: this.handleCommentSubmit })
-	    );
-	  }
+	    getCookie: function getCookie(name) {
+	        var cookieValue = null;
+	        if (document.cookie && document.cookie !== '') {
+	            var cookies = document.cookie.split(';');
+	            for (var i = 0; i < cookies.length; i++) {
+	                var cookie = $.trim(cookies[i]);
+	                // Does this cookie string begin with the name we want?
+	                if (cookie.substring(0, name.length + 1) === name + '=') {
+	                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                    break;
+	                }
+	            }
+	        }
+	        return cookieValue;
+	    },
+	    ajaxSetup: function ajaxSetup() {
+	        var csrftoken = this.getCookie('csrftoken');
+	        function csrfSafeMethod(method) {
+	            // these HTTP methods do not require CSRF protection
+	            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method)
+	            );
+	        }
+	        $.ajaxSetup({
+	            beforeSend: function beforeSend(xhr, settings) {
+	                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+	                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	                }
+	            }
+	        });
+	    },
+	    getInitialState: function getInitialState() {
+	        return { comments: this.props.comments };
+	    },
+	    handleCommentSubmit: function handleCommentSubmit(comment) {
+	        var comments = this.state.comments;
+	        comments.push(comment);
+	        this.setState({ comments: comments }, function () {
+	            this.postComment(comment);
+	        });
+	    },
+	    postComment: function postComment(comment) {
+	        $.ajax({
+	            url: this.props.url,
+	            type: 'POST',
+	            dataType: 'json',
+	            data: comment,
+	            success: function (comments) {
+	                this.setState({ comments: comments });
+	            }.bind(this),
+	            error: function (xhr, status, err) {
+	                console.error(this.props.url, status, err.toString());
+	            }.bind(this)
+	        });
+	    },
+	    getComments: function getComments() {
+	        $.ajax({
+	            url: this.props.url,
+	            dataType: 'json',
+	            success: function (comments) {
+	                this.setState({ comments: comments });
+	            }.bind(this),
+	            error: function (xhr, status, err) {
+	                console.error(this.props.url, status, err.toString());
+	            }.bind(this)
+	        });
+	    },
+	    componentDidMount: function componentDidMount() {
+	        this.ajaxSetup();
+	    },
+	    render: function render() {
+	        return React.createElement(
+	            'div',
+	            null,
+	            React.createElement(CommentList, { comments: this.state.comments }),
+	            React.createElement(CommentForm, { url: this.props.url, onCommentSubmit: this.handleCommentSubmit })
+	        );
+	    }
 	});
 
 /***/ },

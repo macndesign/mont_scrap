@@ -20,6 +20,6 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('core.urls'), name='core'),
-    url(r'^extract/', include('scrap.urls'), name='extract'),
+    url(r'^comment/', include('comment.urls', namespace='comment')),
+    url(r'^extract/', include('scrap.urls', namespace='extract')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
