@@ -41,7 +41,7 @@ redis-server
 
 Run Daphne
 ```console
-daphne chann_tasks.asgi:channel_layer --port 8000
+daphne mont_scrap.asgi:channel_layer --port 8000
 ```
 
 Run worker
